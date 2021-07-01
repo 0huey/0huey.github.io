@@ -3,4 +3,4 @@ title: hackthebox writeups
 ---
 
 ## pwn
-- [hunting](hunting.html) - 28 Jun 2021
+- [hunting](hunting.html) - 1 Jul 2021
