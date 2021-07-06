@@ -1,5 +1,5 @@
 ---
-title: The Mole | CyberThreatForce CTF 2021
+title: The Mole - CyberThreatForce CTF 2021
 ---
 
 # The Mole

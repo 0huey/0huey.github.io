@@ -1,5 +1,5 @@
 ---
-title: The Document is Strange | CyberThreatForce CTF 2021
+title: The Document is Strange - CyberThreatForce CTF 2021
 ---
 
 # The Document is Strange
@@ -117,7 +117,7 @@ A .NET assembly should be easily reversable, so I dropped it into my [FLARE VM](
 
 ![document](images/strange-doc/1.png)
 
-We can grab that text file ourselves with `curl`, and we here we find our flag:
+We can grab that text file ourselves with `curl`, and here we find our flag:
 ```
 $ curl 152.228.133.68/staged_payload.txt
 CYBERTF{M4cr0_D0wnl0ad3r_1s_D0wn}

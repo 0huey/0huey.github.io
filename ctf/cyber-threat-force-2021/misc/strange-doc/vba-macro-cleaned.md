@@ -1,5 +1,5 @@
 ---
-title: obfuscated vba | CyberThreatForce CTF 2021
+title: obfuscated vba - CyberThreatForce CTF 2021
 ---
 
 This VBA script was part of the strange document challenge of CyberThreatForce 2021. [View the writeup here](/ctf/cyber-threat-force-2021/the-document-is-strange.html)

@@ -1,5 +1,5 @@
 ---
-title: reverse VBA obfuscation | CyberThreatForce CTF 2021
+title: reverse VBA obfuscation - CyberThreatForce CTF 2021
 ---
 
 This python script was part of the solution to strange document challenge of CyberThreatForce 2021. [View the writeup here](/ctf/cyber-threat-force-2021/the-document-is-strange.html)

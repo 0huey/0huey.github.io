@@ -2,6 +2,8 @@
 title: cyber threat force 2021 writeups
 ---
 
+# Cyber Threat Force CTF 2021 Writeups
+
 ## networking
 - [the mole](the-mole.html)
 
