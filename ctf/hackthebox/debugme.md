@@ -20,12 +20,12 @@ I just finished SANS FOR 610 and passed GREM. Phew! In that spirit, lets take a 
 Challenge hint:
 > A develper is experiementing with different ways to protect their software. They have sent in a windows binary that is suposed to super secureand really hard to debug. Debug and see if you can find the flag.
 
-The hint says we need to try debugging it, so lets try that. I dropped the exe into my FLARE VM and used Detect it Easy (die.exe) to identify it. IT tells us it's a 32 bit program:
+The hint says we need to try debugging it, so lets try that. I dropped the exe into my FLARE VM and used Detect it Easy (die.exe) to identify it.
 
 ![detect it easy](images/debugme/die.png)
 
 ## Debugging
-So, we'll open x32dbg and start steping through it. The debugger starts paused at some code within ntdll, so I hit F9 to continue past it to the auto breakpoint set at debugme's entry point. First however, we hit another predefined breakpoint at TLS Callback 1:
+DIE tells us it's a 32 bit program, so, we'll open it with x32dbg and start steping through it. The debugger starts paused at some code within ntdll, so I hit F9 to continue past it to the auto breakpoint set at debugme's entry point. First however, we hit another predefined breakpoint at TLS Callback 1:
 
 ![TLS Callback breakpoint](images/debugme/tls-callback.png)
 
@@ -42,13 +42,13 @@ Here's how this works. FS is a segment register that points to the F segment. Th
 
 Now, we don't want to let this program know it's being debugged and exit this function. There are many ways we could prevent this from happening. We could:
 
-- edit the exectable on disk to prevent the program from checking the BeingDebugged flag
+- edit the executable on disk to prevent the program from checking the BeingDebugged flag
 - single step to the cmp instruction and set EAX to 0
 - patch the jmp instruction in the debugger so the comparison is ignored
 
 The simplest way to move forward here, I think, is to use the debuggers ability to patch instructions on the fly. If you select the instruction at 0x408911 and press space, you'll see a popup allowing you to modify the assembly at this address.
 
-There are several ways to approch this modification as well. If you knew where you want to jump to, you could enter that address instead. You could also reverse the logic to je and only jump if the program was not being debugged. Easiest, I think, is to replace all the opcodes with no-operation nop instructions, since bypassing the jump would take us to the code we want to execute. So, change the text box to _nop_. Note that this jne instruction is actually two bytes long, 75 7F, and a nop is only one byte. It is not okay to delete any bytes of code because of the way x86 programs jump around using hard-coded addresses and relative offsets. This could break the program. So, be sure to check the _Fill with NOP's_ box to keep the overwritten instructon the same size.
+There are several ways to approch this modification as well. If you knew where you want to jump to, you could enter that address instead. You could also reverse the logic to je and only jump if the program was not being debugged. Easiest, I think, is to replace all the opcodes with no-operation _nop_ instructions, since bypassing the jump would take us to the code we want to execute. So, change the text box to _nop_. Note that this jne instruction is actually two bytes long, 75 7F, and a nop is only one byte. It is not okay to delete any bytes of code because of the way x86 programs jump around using hard-coded addresses and relative offsets. This could break the program. So, be sure to check the _Fill with NOP's_ box to keep the overwritten instructon the same size.
 
 ![patched code](images/debugme/fs30-patched.png)
 
@@ -70,7 +70,7 @@ Following the time check and a series of NOPs, we find a XOR decryption loop.
 
 This loop will XOR each byte from 0x401620 through 0x401790 with the value 0x5c. These addresses are within the program's .text section, which means we're probably about to modify executable code. If the programmer bothered to hide this code by XORing it during run-time, it probably does something interesting that we should inspect.
 
-It's a good bet that this code will be executed after the XOR loop is done, so we can go ahead and set a break point on the loop's start address. To do this, first press _Alt-G_ and enter _401620_ to go that address. For now, this is garbage code obscured by the XOR key.
+It's a good bet that this code will be executed after the XOR loop is done, so we can go ahead and set a breakpoint. To do this, first press _Alt-G_ and enter _401620_ to go that address. For now, this is garbage code obscured by the XOR key.
 
 We want to set a breakpoint at this spot, but a software breakpoint you'd set using F2 won't work in this case. This is because a software breakpoint actually patches the instruction, temporarly replacing it with an int3 (CC) instruction. This will cause an issue because the XOR loop will modify this CC instruction rather than the original byte value. Instead of a software breakpoint, we'll set a hardware breakpoint which uses special debug registers within the CPU to pause execution. To do this, right click the line at 0x401620 and navigate to _Breakpoint -> Set Hardware on Execution_.
 
@@ -84,7 +84,7 @@ Then, press F9 to run the program and you should hit the breakpoint!
 Now, you should see that the instructions starting at 0x401620 have been modified. We can see some similar code that we bypassed before: using fs:[30] to get the PEB and checking the debug flags, and using rdtsc to measure if execution is occuring too slowly. We can simply NOP out the jumps following each comparison and move on.
 
 ## Finding the Flag
-After passing all three anti-debug techniques again, we finally reach some interesting code.
+After passing all three anti-debug procedures, again, we finally reach some interesting code.
 
 ![stack strings](images/debugme/stack-strings.png)
 
